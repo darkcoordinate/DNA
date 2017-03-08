@@ -147,7 +147,7 @@ int partition_line(vector<line*> &A, vector<int> &B, int start, int end){
 	for(int j =  start + 1; j <= end; j++){
 		if(A[B[j]]->min_x() < piv->min_x()){
 			swap(B[i], B[j]);
-			cout<<j<<endl;
+			//cout<<j<<endl;
 			i+= 1;
 		}
 	}
@@ -199,10 +199,54 @@ void read(char* argv, vector<pointer*> &Points, vector<line*> &lineset){
 	}
 }
 
+y
 
 int main(int argc, char**argv){
 	vector<pointer*> Points(1000);
 	vector<line*> lineset(1000);
 	read(argv[1],Points, lineset);
+	//cout<<Points.size()<<" "<<lineset.size()<<endl;
+	vector<int> point(Points.size());
+	for(int i = 0; i < Points.size();i++){
+		point[i] = i;
+	}
+	vector<int> line_arr(lineset.size());
+	for(int i = 0; i < lineset.size(); i++){
+		line_arr[i] = i;
+	}
+	quick_sort(Points, point,0, Points.size() - 1, 0);
+	quick_sort_line(lineset, line_arr,0,lineset.size() - 1);
+	//cout<<"Hello\n";
+	for(int i = 0; i < lineset.size();i++){
+		//cout<<i<<" "<<line_arr[i]<<" "<<lineset[line_arr[i]]->l[0].k[0]<<" "<<lineset[line_arr[i]]->l[0].k[1]<<" "<<lineset[line_arr[i]]->l[1].k[0]<<" "<<lineset[line_arr[i]]->l[1].k[1]<<endl;
+	}
+	for(int i = 0; i < line_arr.size(); i++){
+		//cout<<" printing the details ";
+		//cout<<lineset[line_arr[i]]->max_x()<<" "<<lineset[line_arr[i]]->min_x()<<endl;
+
+		vector<int> a(line_arr.size() - i);
+		int h = line_arr.size() - 1;
+		int l = i;
+		int m = (h + l)/2;
+		while(l < h){
+			if(lineset[line_arr[i]]->max_x() >= lineset[line_arr[line_arr.size() - 1]]->min_x()){
+				m = h;
+				break;
+			}
+			m = (h + l)/2;
+			//cout<<m<<" "<<h<<" "<<l<<endl;
+			if(( (lineset[line_arr[i]]->max_x() < lineset[line_arr[m+1]]->min_x()) && (lineset[line_arr[i]]->max_x() >= lineset[line_arr[m]]->min_x())) || ( (lineset[line_arr[i]]->max_x() <= lineset[line_arr[m]]->min_x()) && (lineset[line_arr[i]]->max_x() > lineset[line_arr[m - 1 ]]->min_x()))){
+				break;
+			}
+			else if(lineset[line_arr[i]]->max_x() >= lineset[line_arr[m + 1]]->min_x() ) {
+				l = m;
+			}
+			else {
+				h = m;
+			}
+		}
+
+		cout<<i<<" "<<m<<" "<<lineset[line_arr[i]]->max_x()<<" "<<lineset[line_arr[m]]->min_x()<<endl;
+	}
 	return 0;
 }
