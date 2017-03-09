@@ -162,6 +162,54 @@ void quick_sort_line(vector<line*> &A, vector<int> &B, int start, int end){
 		quick_sort_line(A,B,piv_pos + 1, end);
 	}
 }
+
+int partition_line_for_ymin(vector<line*> &A, vector<int> &B,vector<int> &C, int start, int end){
+
+	int i = start +1;
+	line* piv = A[B[C[start]]];
+	for(int j =  start + 1; j <= end; j++){
+		if(A[B[C[j]]]->min_y() < piv->min_y()){
+			swap(C[i], C[j]);
+			//cout<<j<<endl;
+			i+= 1;
+		}
+	}
+	swap(C[start] , C[i -1]);
+	return i -1;
+}
+
+void quick_sort_line_ymin_if_x_sorted(vector<line*> &A, vector<int> &B,vector<int> &C, int start, int end){
+	if(start < end){
+		int piv_pos = partition_line_for_ymin(A,B,C,start, end);
+		quick_sort_line_ymin_if_x_sorted(A,B,C,start,piv_pos - 1);
+		quick_sort_line_ymin_if_x_sorted(A,B,C,piv_pos + 1, end);
+	}
+}
+
+
+int partition_line_for_ymax(vector<line*> &A, vector<int> &B,vector<int> &C,vector<int> &D, int start, int end){
+
+	int i = start +1;
+	line* piv = A[B[C[D[start]]]];
+	for(int j =  start + 1; j <= end; j++){
+		if(A[B[C[D[j]]]]->min_y() < piv->min_y()){
+			swap(D[i], D[j]);
+			//cout<<j<<endl;
+			i+= 1;
+		}
+	}
+	swap(D[start] , D[i -1]);
+	return i -1;
+}
+
+void quick_sort_line_ymax_if_x_sorted(vector<line*> &A, vector<int> &B,vector<int> &C, vector<int> &D, int start, int end){
+	if(start < end){
+		int piv_pos = partition_line_for_ymax(A,B,C,D,start, end);
+		quick_sort_line_ymax_if_x_sorted(A,B,C,D,start,piv_pos - 1);
+		quick_sort_line_ymax_if_x_sorted(A,B,C,D,piv_pos + 1, end);
+	}
+}
+
 void read(char* argv, vector<pointer*> &Points, vector<line*> &lineset){
 	ifstream file(argv);
 	string line2;
@@ -199,7 +247,7 @@ void read(char* argv, vector<pointer*> &Points, vector<line*> &lineset){
 	}
 }
 
-y
+
 
 int main(int argc, char**argv){
 	vector<pointer*> Points(1000);
@@ -223,8 +271,6 @@ int main(int argc, char**argv){
 	for(int i = 0; i < line_arr.size(); i++){
 		//cout<<" printing the details ";
 		//cout<<lineset[line_arr[i]]->max_x()<<" "<<lineset[line_arr[i]]->min_x()<<endl;
-
-		vector<int> a(line_arr.size() - i);
 		int h = line_arr.size() - 1;
 		int l = i;
 		int m = (h + l)/2;
@@ -235,6 +281,7 @@ int main(int argc, char**argv){
 			}
 			m = (h + l)/2;
 			//cout<<m<<" "<<h<<" "<<l<<endl;
+			//checking equality to the nearest y value
 			if(( (lineset[line_arr[i]]->max_x() < lineset[line_arr[m+1]]->min_x()) && (lineset[line_arr[i]]->max_x() >= lineset[line_arr[m]]->min_x())) || ( (lineset[line_arr[i]]->max_x() <= lineset[line_arr[m]]->min_x()) && (lineset[line_arr[i]]->max_x() > lineset[line_arr[m - 1 ]]->min_x()))){
 				break;
 			}
@@ -245,8 +292,62 @@ int main(int argc, char**argv){
 				h = m;
 			}
 		}
+		vector<int>y_data_min(m-i);
+		for(int j =i+1, ji = 0  ; j <= m; j++, ji++){
+			y_data_min[ji] = j;
+		}
+		quick_sort_line_ymin_if_x_sorted(lineset, line_arr, y_data_min, 0, m-i-1);
+		vector<int>y_data_max(m-i);
+		for(int j =i+1, ji = 0  ; j <= m; j++, ji++){
+			y_data_max[ji] = j;
+		}
+		quick_sort_line_ymax_if_x_sorted(lineset,line_arr,y_data_min,y_data_max, 0,m-i-1);
+		h = y_data_max.size();
+		l = 0;
+		m = (h + l)/2;
+		while(l < h){
+			if(lineset[line_arr[i]]->min_x() >= lineset[line_arr[y_data_max[y_data_max.size() - 1]]]->max_x()){
+				m = h;
+				break;
+			}
+			if(((lineset[line_arr[i]]->min_x() >= lineset[line_arr[y_data_max[m]]]->max_x()) && (lineset[line_arr[i]]->min_x() < lineset[line_arr[y_data_max[m + 1]]]->max_x())) ||(
+					( lineset[line_arr[i]]->min_x() < lineset[line_arr[y_data_max[m]]]->max_x()) && ( lineset[line_arr[i]]->min_x() > lineset[line_arr[y_data_max[m - 1]]]->max_x()))){
+				break;
+			}
+			else if( lineset[line_arr[i]]-min_x() >= lineset[line_arr[y_data_max[m + 1]]]->max_x()){
+				l = m;
+			}
+			else{
+				h = m;
+			}
+		}
+		int lowy = m;
+		h = y_data_min.size();
+		l = 0;
+		m = (h + l)/2;
+		while(l < h){
+			if( lineset[line_arr[i]]->max_x() >= lineset[line_arr[y_data_min[y_data_min.size()]]]->min_x()){
+				m = h;
+			}
 
-		cout<<i<<" "<<m<<" "<<lineset[line_arr[i]]->max_x()<<" "<<lineset[line_arr[m]]->min_x()<<endl;
+			if(((lineset[line_arr[i]]->max_x() >= lineset[line_arr[y_data_min[m]]]->min_x()) && (lineset[line_arr[i]]->max_x() < lineset[line_arr[y_data_min[m + 1]]]->min_x())) ||(
+					( lineset[line_arr[i]]->max_x() < lineset[line_arr[y_data_min[m]]]->min_x()) && ( lineset[line_arr[i]]->max_x() > lineset[line_arr[y_data_min[m - 1]]]->min_x()))){
+				break;
+			}
+			else if( lineset[line_arr[i]]-max_x() >= lineset[line_arr[y_data_min[m + 1]]]->min_x()){
+				l = m;
+			}
+			else{
+				h = m;
+			}
+		}
+
+		int highy = m;
+
+
+		y_data_min.erase(y_data_min.begin(),y_data_min.end());
+		y_data_max.erase(y_data_max.begin(), y_data_max.end());
+
 	}
 	return 0;
 }
