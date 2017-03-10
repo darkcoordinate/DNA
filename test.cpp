@@ -163,31 +163,7 @@ void quick_sort_line(vector<line*> &A, vector<int> &B, int start, int end){
 	}
 }
 
-int partition_line_for_ymin(vector<line*> &A, vector<int> &B,vector<int> &C, int start, int end){
-
-	int i = start +1;
-	line* piv = A[B[C[start]]];
-	for(int j =  start + 1; j <= end; j++){
-		if(A[B[C[j]]]->min_y() < piv->min_y()){
-			swap(C[i], C[j]);
-			//cout<<j<<endl;
-			i+= 1;
-		}
-	}
-	swap(C[start] , C[i -1]);
-	return i -1;
-}
-
-void quick_sort_line_ymin_if_x_sorted(vector<line*> &A, vector<int> &B,vector<int> &C, int start, int end){
-	if(start < end){
-		int piv_pos = partition_line_for_ymin(A,B,C,start, end);
-		quick_sort_line_ymin_if_x_sorted(A,B,C,start,piv_pos - 1);
-		quick_sort_line_ymin_if_x_sorted(A,B,C,piv_pos + 1, end);
-	}
-}
-
-
-int partition_line_for_ymax(vector<line*> &A, vector<int> &B,vector<int> &C,vector<int> &D, int start, int end){
+int partition_line_for_ymin(vector<line*> &A, vector<int> &B,vector<int> &C,vector<int> &D, int start, int end){
 
 	int i = start +1;
 	line* piv = A[B[C[D[start]]]];
@@ -202,11 +178,35 @@ int partition_line_for_ymax(vector<line*> &A, vector<int> &B,vector<int> &C,vect
 	return i -1;
 }
 
-void quick_sort_line_ymax_if_x_sorted(vector<line*> &A, vector<int> &B,vector<int> &C, vector<int> &D, int start, int end){
+void quick_sort_line_ymin_if_x_sorted(vector<line*> &A, vector<int> &B,vector<int> &C,vector<int> &D, int start, int end){
 	if(start < end){
-		int piv_pos = partition_line_for_ymax(A,B,C,D,start, end);
-		quick_sort_line_ymax_if_x_sorted(A,B,C,D,start,piv_pos - 1);
-		quick_sort_line_ymax_if_x_sorted(A,B,C,D,piv_pos + 1, end);
+		int piv_pos = partition_line_for_ymin(A,B,C,D,start, end);
+		quick_sort_line_ymin_if_x_sorted(A,B,C,D,start,piv_pos - 1);
+		quick_sort_line_ymin_if_x_sorted(A,B,C,D,piv_pos + 1, end);
+	}
+}
+
+
+int partition_line_for_ymax(vector<line*> &A, vector<int> &B,vector<int> &C, int start, int end){
+
+	int i = start +1;
+	line* piv = A[B[C[start]]];
+	for(int j =  start + 1; j <= end; j++){
+		if(A[B[C[j]]]->max_y() < piv->max_y()){
+			swap(C[i], C[j]);
+			//cout<<j<<endl;
+			i+= 1;
+		}
+	}
+	swap(C[start] , C[i -1]);
+	return i -1;
+}
+
+void quick_sort_line_ymax_if_x_sorted(vector<line*> &A, vector<int> &B,vector<int> &C, int start, int end){
+	if(start < end){
+		int piv_pos = partition_line_for_ymax(A,B,C,start, end);
+		quick_sort_line_ymax_if_x_sorted(A,B,C,start,piv_pos - 1);
+		quick_sort_line_ymax_if_x_sorted(A,B,C,piv_pos + 1, end);
 	}
 }
 
@@ -264,7 +264,7 @@ int main(int argc, char**argv){
 	}
 	quick_sort(Points, point,0, Points.size() - 1, 0);
 	quick_sort_line(lineset, line_arr,0,lineset.size() - 1);
-	//cout<<"Hello\n";
+	cout<<lineset.size()<<endl;
 	for(int i = 0; i < lineset.size();i++){
 		//cout<<i<<" "<<line_arr[i]<<" "<<lineset[line_arr[i]]->l[0].k[0]<<" "<<lineset[line_arr[i]]->l[0].k[1]<<" "<<lineset[line_arr[i]]->l[1].k[0]<<" "<<lineset[line_arr[i]]->l[1].k[1]<<endl;
 	}
@@ -292,62 +292,62 @@ int main(int argc, char**argv){
 				h = m;
 			}
 		}
-		vector<int>y_data_min(m-i);
-		for(int j =i+1, ji = 0  ; j <= m; j++, ji++){
-			y_data_min[ji] = j;
-		}
-		quick_sort_line_ymin_if_x_sorted(lineset, line_arr, y_data_min, 0, m-i-1);
+		cout<<m<<endl;
+/*
 		vector<int>y_data_max(m-i);
 		for(int j =i+1, ji = 0  ; j <= m; j++, ji++){
 			y_data_max[ji] = j;
 		}
-		quick_sort_line_ymax_if_x_sorted(lineset,line_arr,y_data_min,y_data_max, 0,m-i-1);
-		h = y_data_max.size();
+		quick_sort_line_ymax_if_x_sorted(lineset,line_arr,y_data_max, 0,m-i-1);
+		h = y_data_max.size() - 1;
 		l = 0;
 		m = (h + l)/2;
 		while(l < h){
-			if(lineset[line_arr[i]]->min_x() >= lineset[line_arr[y_data_max[y_data_max.size() - 1]]]->max_x()){
+			if(lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[y_data_max.size() - 1]]]->max_y()){
 				m = h;
 				break;
 			}
-			if(((lineset[line_arr[i]]->min_x() >= lineset[line_arr[y_data_max[m]]]->max_x()) && (lineset[line_arr[i]]->min_x() < lineset[line_arr[y_data_max[m + 1]]]->max_x())) ||(
-					( lineset[line_arr[i]]->min_x() < lineset[line_arr[y_data_max[m]]]->max_x()) && ( lineset[line_arr[i]]->min_x() > lineset[line_arr[y_data_max[m - 1]]]->max_x()))){
+			if(((lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[m]]]->max_y()) && (lineset[line_arr[i]]->min_y() < lineset[line_arr[y_data_max[m + 1]]]->max_y())) ||(
+					( lineset[line_arr[i]]->min_y() <= lineset[line_arr[y_data_max[m]]]->max_y()) && ( lineset[line_arr[i]]->min_y() > lineset[line_arr[y_data_max[m - 1]]]->max_y()))){
 				break;
 			}
-			else if( lineset[line_arr[i]]-min_x() >= lineset[line_arr[y_data_max[m + 1]]]->max_x()){
+			else if( lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[m + 1]]]->max_y()){
 				l = m;
 			}
 			else{
 				h = m;
 			}
 		}
-		int lowy = m;
-		h = y_data_min.size();
+		int max_y_length = m;
+		vector<int>y_data_min(m+1);
+		for(int j = 0; j <= max_y_length; j++){
+			y_data_min[j] = j;
+		}
+		quick_sort_line_ymin_if_x_sorted(lineset, line_arr, y_data_max,y_data_min, 0, m);
+		h = y_data_min.size() -1;
 		l = 0;
 		m = (h + l)/2;
 		while(l < h){
-			if( lineset[line_arr[i]]->max_x() >= lineset[line_arr[y_data_min[y_data_min.size()]]]->min_x()){
+			if( lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min.size() - 1]]]->min_y()){
 				m = h;
 			}
 
-			if(((lineset[line_arr[i]]->max_x() >= lineset[line_arr[y_data_min[m]]]->min_x()) && (lineset[line_arr[i]]->max_x() < lineset[line_arr[y_data_min[m + 1]]]->min_x())) ||(
-					( lineset[line_arr[i]]->max_x() < lineset[line_arr[y_data_min[m]]]->min_x()) && ( lineset[line_arr[i]]->max_x() > lineset[line_arr[y_data_min[m - 1]]]->min_x()))){
+			if(((lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min[m]]]]->min_y()) && (lineset[line_arr[i]]->max_x() < lineset[line_arr[y_data_min[y_data_max[m + 1]]]]->min_y())) ||(
+					( lineset[line_arr[i]]->max_y() < lineset[line_arr[y_data_max[y_data_min[m]]]]->min_y()) && ( lineset[line_arr[i]]->max_y() > lineset[line_arr[y_data_max[y_data_min[m - 1]]]]->min_y()))){
 				break;
 			}
-			else if( lineset[line_arr[i]]-max_x() >= lineset[line_arr[y_data_min[m + 1]]]->min_x()){
+			else if( lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min[m + 1]]]]->min_y()){
 				l = m;
 			}
 			else{
 				h = m;
 			}
 		}
-
-		int highy = m;
 
 
 		y_data_min.erase(y_data_min.begin(),y_data_min.end());
 		y_data_max.erase(y_data_max.begin(), y_data_max.end());
-
+*/
 	}
 	return 0;
 }
