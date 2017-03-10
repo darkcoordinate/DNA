@@ -1,0 +1,34 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+Index	buttons.py	/^class Index(object):$/;"	kind:class	line:15
+a1.py	a1.py	1;"	kind:file	line:1
+axnext	buttons.py	/^axnext = plt.axes([0.81, 0.05, 0.1, 0.075])$/;"	kind:variable	line:34
+axprev	buttons.py	/^axprev = plt.axes([0.7, 0.05, 0.1, 0.075])$/;"	kind:variable	line:33
+bnext	buttons.py	/^bnext = Button(axnext, 'Next')$/;"	kind:variable	line:35
+bprev	buttons.py	/^bprev = Button(axprev, 'Previous')$/;"	kind:variable	line:37
+buttons.py	buttons.py	1;"	kind:file	line:1
+bx	a1.py	/^bx = []$/;"	kind:variable	line:11
+by	a1.py	/^by = []$/;"	kind:variable	line:12
+callback	buttons.py	/^callback = Index()$/;"	kind:variable	line:32
+cx	a1.py	/^cx = []$/;"	kind:variable	line:17
+cy	a1.py	/^cy = []$/;"	kind:variable	line:18
+fl	test2.py	/^fl = int(lines[1+50+ int(sys.argv[2])])$/;"	kind:variable	line:8
+freqs	buttons.py	/^freqs = np.arange(2, 20, 3)$/;"	kind:variable	line:6
+il	test2.py	/^il = int(sys.argv[2])$/;"	kind:variable	line:7
+ind	buttons.py	/^    ind = 0$/;"	kind:variable	line:16
+k	a1.py	/^	k =  strng.split()$/;"	kind:variable	line:14
+k	a1.py	/^	k = strng.split();$/;"	kind:variable	line:20
+linep	test2.py	/^	linep = lines[i+1].split()$/;"	kind:variable	line:10
+lines	a1.py	/^	lines = f.readlines()$/;"	kind:variable	line:7
+lines	test2.py	/^	lines = f.readlines()$/;"	kind:variable	line:5
+lines2	a1.py	/^	lines2 = f.readlines()$/;"	kind:variable	line:10
+n_line	test2.py	/^n_line = int(lines[0])$/;"	kind:variable	line:6
+next	buttons.py	/^    def next(self, event):$/;"	kind:member	line:18
+prev	buttons.py	/^    def prev(self, event):$/;"	kind:member	line:25
+s	buttons.py	/^s = np.sin(2*np.pi*freqs[0]*t)$/;"	kind:variable	line:11
+t	buttons.py	/^t = np.arange(0.0, 1.0, 0.001)$/;"	kind:variable	line:10
+test2.py	test2.py	1;"	kind:file	line:1

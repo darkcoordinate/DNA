@@ -266,7 +266,7 @@ int main(int argc, char**argv){
 	quick_sort_line(lineset, line_arr,0,lineset.size() - 1);
 	cout<<lineset.size()<<endl;
 	for(int i = 0; i < lineset.size();i++){
-		//cout<<i<<" "<<line_arr[i]<<" "<<lineset[line_arr[i]]->l[0].k[0]<<" "<<lineset[line_arr[i]]->l[0].k[1]<<" "<<lineset[line_arr[i]]->l[1].k[0]<<" "<<lineset[line_arr[i]]->l[1].k[1]<<endl;
+		cout<<i<<" "<<line_arr[i]<<" "<<lineset[line_arr[i]]->l[0].k[0]<<" "<<lineset[line_arr[i]]->l[0].k[1]<<" "<<lineset[line_arr[i]]->l[1].k[0]<<" "<<lineset[line_arr[i]]->l[1].k[1]<<endl;
 	}
 	for(int i = 0; i < line_arr.size(); i++){
 		//cout<<" printing the details ";
@@ -293,12 +293,18 @@ int main(int argc, char**argv){
 			}
 		}
 		cout<<m<<endl;
-/*
+
 		vector<int>y_data_max(m-i);
 		for(int j =i+1, ji = 0  ; j <= m; j++, ji++){
 			y_data_max[ji] = j;
 		}
 		quick_sort_line_ymax_if_x_sorted(lineset,line_arr,y_data_max, 0,m-i-1);
+		cout<<y_data_max.size()<<endl;
+		for(int j =0; j < y_data_max.size(); j++){
+			cout<<line_arr[y_data_max[j]]<<" ";
+		}
+		cout<<endl;
+		/*
 		h = y_data_max.size() - 1;
 		l = 0;
 		m = (h + l)/2;
@@ -318,6 +324,8 @@ int main(int argc, char**argv){
 				h = m;
 			}
 		}
+
+/*
 		int max_y_length = m;
 		vector<int>y_data_min(m+1);
 		for(int j = 0; j <= max_y_length; j++){
