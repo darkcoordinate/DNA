@@ -116,6 +116,35 @@ pointer* line_intersection_with(line lin, double n){
 }
 
 
+pointer* lineIntersection( line lin, line lin2){
+	double k1 = (lin.l[0].k[0] - lin.l[1].k[0]);
+	double k2 = (lin2.l[0].k[0] - lin2.l[1].k[0]);
+	if( k1 == 0 || k2 == 0){
+		double m1 = k1/(lin.l[0].k[1] - lin.l[1].k[1]);
+		double m2 = k2/(lin2.l[0].k[1] - lin2.l[1].k[1]);
+		double c1 = lin.l[0].k[0] - lin.l[0].k[1]*m1;
+		double c2 = lin2.l[0].k[0] - lin2.l[0].k[1]*m2;
+		if(m1 == m2)
+			return NULL;
+		double x = (c2 - c1)/(m1 - m2);
+
+		double y =  m1*x + c1;
+		return new pointer(y,x);
+	}
+	else{
+		double m1 = (lin.l[0].k[1] - lin.l[1].k[1])/k1;
+		double m2 = (lin2.l[0].k[1] - lin2.l[1].k[1])/k2;
+		double c1 = lin.l[0].k[1] - lin.l[0].k[0]*m1;
+		double c2 = lin2.l[0].k[1] - lin2.l[0].k[0]*m2;
+		if(m1 == m2)
+			return NULL;
+		double x = (c2 - c1)/(m1 - m2);
+
+		double y =  m1*x + c1;
+		return new pointer(x,y);
+	}
+}
+
 int partition(vector<pointer*> &A, vector<int> &B, int start, int end, int p_1){
 	int i =  start + 1;
 	pointer* piv = A[B[start]];
@@ -164,7 +193,6 @@ void quick_sort_line(vector<line*> &A, vector<int> &B, int start, int end){
 }
 
 int partition_line_for_ymin(vector<line*> &A, vector<int> &B,vector<int> &C,vector<int> &D, int start, int end){
-
 	int i = start +1;
 	line* piv = A[B[C[D[start]]]];
 	for(int j =  start + 1; j <= end; j++){
@@ -268,6 +296,7 @@ int main(int argc, char**argv){
 	for(int i = 0; i < lineset.size();i++){
 		cout<<i<<" "<<line_arr[i]<<" "<<lineset[line_arr[i]]->l[0].k[0]<<" "<<lineset[line_arr[i]]->l[0].k[1]<<" "<<lineset[line_arr[i]]->l[1].k[0]<<" "<<lineset[line_arr[i]]->l[1].k[1]<<endl;
 	}
+
 	for(int i = 0; i < line_arr.size(); i++){
 		//cout<<" printing the details ";
 		//cout<<lineset[line_arr[i]]->max_x()<<" "<<lineset[line_arr[i]]->min_x()<<endl;
@@ -282,7 +311,8 @@ int main(int argc, char**argv){
 			m = (h + l)/2;
 			//cout<<m<<" "<<h<<" "<<l<<endl;
 			//checking equality to the nearest y value
-			if(( (lineset[line_arr[i]]->max_x() < lineset[line_arr[m+1]]->min_x()) && (lineset[line_arr[i]]->max_x() >= lineset[line_arr[m]]->min_x())) || ( (lineset[line_arr[i]]->max_x() <= lineset[line_arr[m]]->min_x()) && (lineset[line_arr[i]]->max_x() > lineset[line_arr[m - 1 ]]->min_x()))){
+			if( (lineset[line_arr[i]]->max_x() < lineset[line_arr[m+1]]->min_x()) && (lineset[line_arr[i]]->max_x() >= lineset[line_arr[m]]->min_x())) {
+					//( (lineset[line_arr[i]]->max_x() <= lineset[line_arr[m]]->min_x()) && (lineset[line_arr[i]]->max_x() > lineset[line_arr[m - 1 ]]->min_x()))){
 				break;
 			}
 			else if(lineset[line_arr[i]]->max_x() >= lineset[line_arr[m + 1]]->min_x() ) {
@@ -292,70 +322,100 @@ int main(int argc, char**argv){
 				h = m;
 			}
 		}
-		cout<<m<<endl;
+		//cout<<m<<endl;
+		if(!(m-i == 0)){
+			vector<int>y_data_max(m-i);
+			for(int j =i+1, ji = 0  ; j <= m; j++, ji++){
+				y_data_max[ji] = j;
+			}
+			quick_sort_line_ymax_if_x_sorted(lineset,line_arr,y_data_max, 0,m-i-1);
+			//cout<<"y max data size "<<y_data_max.size()<<endl;
+			//for(int j =0; j < y_data_max.size(); j++){
+			//	cout<<y_data_max[j]<<" ";
+			//}
+			//cout<<endl;
+			h = y_data_max.size() - 1;
+			l = 0;
+			m = (h + l)/2;
+			while(l < h){
+				if(lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[y_data_max.size() - 1]]]->max_y()){
+					m = h;
+					break;
+				}
+				if(lineset[line_arr[i]]->min_y() < lineset[line_arr[y_data_max[0]]]->max_y()){
+					m = -1;
+					break;
+				}
+				m = (h + l)/2;
+				if((lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[m]]]->max_y()) && (lineset[line_arr[i]]->min_y() < lineset[line_arr[y_data_max[m + 1]]]->max_y())){
+					break;
+				}
 
-		vector<int>y_data_max(m-i);
-		for(int j =i+1, ji = 0  ; j <= m; j++, ji++){
-			y_data_max[ji] = j;
-		}
-		quick_sort_line_ymax_if_x_sorted(lineset,line_arr,y_data_max, 0,m-i-1);
-		cout<<y_data_max.size()<<endl;
-		for(int j =0; j < y_data_max.size(); j++){
-			cout<<line_arr[y_data_max[j]]<<" ";
-		}
-		cout<<endl;
-		/*
-		h = y_data_max.size() - 1;
-		l = 0;
-		m = (h + l)/2;
-		while(l < h){
-			if(lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[y_data_max.size() - 1]]]->max_y()){
-				m = h;
-				break;
-			}
-			if(((lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[m]]]->max_y()) && (lineset[line_arr[i]]->min_y() < lineset[line_arr[y_data_max[m + 1]]]->max_y())) ||(
-					( lineset[line_arr[i]]->min_y() <= lineset[line_arr[y_data_max[m]]]->max_y()) && ( lineset[line_arr[i]]->min_y() > lineset[line_arr[y_data_max[m - 1]]]->max_y()))){
-				break;
-			}
-			else if( lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[m + 1]]]->max_y()){
-				l = m;
-			}
-			else{
-				h = m;
-			}
-		}
+				/*else if(( lineset[line_arr[i]]->min_y() < lineset[line_arr[y_data_max[m]]]->max_y()) && ( lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[m - 1]]]->max_y())){
 
-/*
-		int max_y_length = m;
-		vector<int>y_data_min(m+1);
-		for(int j = 0; j <= max_y_length; j++){
-			y_data_min[j] = j;
+					break;
+				}*/
+				else if( lineset[line_arr[i]]->min_y() >= lineset[line_arr[y_data_max[m + 1]]]->max_y()){
+					l = m;
+				}
+				else{
+					h = m;
+				}
+			}
+			//cout<<"y_max_data: "<<m<<endl;
+
+			int max_y_length = m;
+			if( y_data_max.size() - m - 1 > 0) {
+				vector<int>y_data_min(y_data_max.size() - m - 1 );
+				for(int j = 0; j < y_data_min.size(); j++){
+					y_data_min[j] = j+m;
+				}
+				//cout<<"file N "<<y_data_min.size()<<"\n";
+				quick_sort_line_ymin_if_x_sorted(lineset, line_arr, y_data_max,y_data_min, 0,  y_data_min.size() -1);
+				//for(int j = 0; j < y_data_min.size(); j++){
+				//	cout<<y_data_min[j]<<" ";
+				//}
+				//cout<<endl;
+				//cout<<"Cine N "<< i <<"\n";
+				h = y_data_min.size() -1;
+				l = 0;
+				m = (h + l)/2;
+				while(l < h){
+					//cout<<"line1 \n";
+					if( lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min.size() - 1]]]->min_y()){
+						m = h;
+						break;
+					}
+					if( lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[0]]]->min_y()){
+						m = -1;
+						break;
+					}
+					//cout<<"line 2 "<<m<<" d\n";
+					m = (h + l)/2;
+					if((lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min[m]]]]->min_y()) && (lineset[line_arr[i]]->max_x() < lineset[line_arr[y_data_min[y_data_max[m + 1]]]]->min_y())){
+							//(( lineset[line_arr[i]]->max_y() < lineset[line_arr[y_data_max[y_data_min[m]]]]->min_y()) && ( lineset[line_arr[i]]->max_y() > lineset[line_arr[y_data_max[y_data_min[m - 1]]]]->min_y()))){
+						break;
+					}
+					else if( lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min[m + 1]]]]->min_y()){
+						l = m;
+					}
+					else{
+						h = m;
+					}
+					//cout<<"line 5\n";
+				}
+				//cout<<"y_min_data: "<<m<<" "<<y_data_min.size()<<endl;
+				for(int j = 0; j <= m; j++){
+					pointer* ki1= lineIntersection(*lineset[line_arr[i]], *lineset[line_arr[y_data_max[j]]]);
+					if(ki1 != NULL){
+						cout<<ki1->k[0]<<" "<< ki1->k[1]<<endl;
+					}
+				}
+				y_data_min.erase(y_data_min.begin(),y_data_min.end());
+			}
+			y_data_max.erase(y_data_max.begin(), y_data_max.end());
 		}
-		quick_sort_line_ymin_if_x_sorted(lineset, line_arr, y_data_max,y_data_min, 0, m);
-		h = y_data_min.size() -1;
-		l = 0;
-		m = (h + l)/2;
-		while(l < h){
-			if( lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min.size() - 1]]]->min_y()){
-				m = h;
-			}
-
-			if(((lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min[m]]]]->min_y()) && (lineset[line_arr[i]]->max_x() < lineset[line_arr[y_data_min[y_data_max[m + 1]]]]->min_y())) ||(
-					( lineset[line_arr[i]]->max_y() < lineset[line_arr[y_data_max[y_data_min[m]]]]->min_y()) && ( lineset[line_arr[i]]->max_y() > lineset[line_arr[y_data_max[y_data_min[m - 1]]]]->min_y()))){
-				break;
-			}
-			else if( lineset[line_arr[i]]->max_y() >= lineset[line_arr[y_data_max[y_data_min[m + 1]]]]->min_y()){
-				l = m;
-			}
-			else{
-				h = m;
-			}
-		}
-
-
-		y_data_min.erase(y_data_min.begin(),y_data_min.end());
-		y_data_max.erase(y_data_max.begin(), y_data_max.end());
-*/
 	}
+
 	return 0;
 }
