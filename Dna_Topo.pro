@@ -13,7 +13,9 @@ SOURCES += main.cpp \
     file.cpp \
     test.cpp \
     test1.cpp \
-    test3.cpp
+    test3.cpp \
+    test4.cpp \
+    test5.cpp
 
 HEADERS += \
     fileread.h

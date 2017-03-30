@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv){
 	srand(time(NULL));
-	int point = 100;
+	int point = 30;
 	printf("o plane\n");
 	for(int i = 0; i < point; i++){
 		int a = rand()%100000;
@@ -16,9 +16,9 @@ int main(int argc, char** argv){
 		double m = (double)c/10000.0;
 		printf("v %lf %lf %lf\n",k,l,0.0);
 	}
-	for(int i = 0; i < 50; i++){
-		int a = rand()%100 + 1;
-		int b = rand()%100 + 1;
+	for(int i = 0; i < 20; i++){
+		int a = rand()%point+ 1;
+		int b = rand()%point + 1;
 		printf("l %d %d\n",a, b);
 	}
 	return 0;

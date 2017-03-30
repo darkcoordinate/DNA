@@ -1,11 +1,13 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <vector>
 #include <fstream>
 #include <exception>
 using namespace std;
-
+long MAX_LIN = 0;
+long MAX_PNT = 0;
 class pointer{
 public:
 	vector<double> k;
@@ -25,6 +27,7 @@ class line {
 public:
 	vector<pointer> l;
 	line():l(2){
+
 	}
 	line(pointer a, pointer b): l(2){
 		l[0] = a;
@@ -197,7 +200,7 @@ int partition_line_for_ymin(vector<line*> &A, vector<int> &B,vector<int> &C,vect
 	line* piv = A[B[C[D[start]]]];
 	for(int j =  start + 1; j <= end; j++){
 		if(A[B[C[D[j]]]]->min_y() < piv->min_y()){
-			swap(D[i], D[j]);
+		swap(D[i], D[j]);
 			//cout<<j<<endl;
 			i+= 1;
 		}
@@ -408,7 +411,9 @@ int main(int argc, char**argv){
 				for(int j = 0; j <= m; j++){
 					pointer* ki1= lineIntersection(*lineset[line_arr[i]], *lineset[line_arr[y_data_max[j]]]);
 					if(ki1 != NULL){
-						cout<<ki1->k[0]<<" "<< ki1->k[1]<<endl;
+						if(!isnan(ki1->k[0])){
+							cout<<ki1->k[0]<<" "<< ki1->k[1]<<endl;
+						}
 					}
 				}
 				y_data_min.erase(y_data_min.begin(),y_data_min.end());
